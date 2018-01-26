@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/12/20/r-crawler-start/</loc>
+    
+    <lastmod>2018-01-26T10:28:48.482Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2016/06/07/iOS-developers/</loc>
+    
+    <lastmod>2018-01-26T09:24:09.641Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2016/07/19/NSProxy-sample/</loc>
     
     <lastmod>2018-01-26T08:16:49.564Z</lastmod>

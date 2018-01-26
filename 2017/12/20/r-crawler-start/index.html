@@ -1,0 +1,792 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="R 爬虫 HTML 正则," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Shawkaine's 小炉" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近受友之托，帮忙抓取国内铝合金的价格，正好在学习R语言，便答应了来练手。 初始网址是 铝合金ADC12价格行情，集合了每日价格的搜索列表，每页60条，  下一页同样，直到最后一页，大概一整年的数据。查看一下源代码，链接就在标签里，可以直接获取，包括下一页，于是开干。  参考教程 【译文】R语言网络爬虫初学者指南（使用rvest包）  整体思路 根据教程，在Chrome安装Selector Gad">
+<meta name="keywords" content="R 爬虫 HTML 正则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="R语言静态网页爬虫（rvest, stringr, DOM)">
+<meta property="og:url" content="http://yoursite.com/2017/12/20//r-crawler-start/index.html">
+<meta property="og:site_name" content="Shawkaine&#39;s 小炉">
+<meta property="og:description" content="最近受友之托，帮忙抓取国内铝合金的价格，正好在学习R语言，便答应了来练手。 初始网址是 铝合金ADC12价格行情，集合了每日价格的搜索列表，每页60条，  下一页同样，直到最后一页，大概一整年的数据。查看一下源代码，链接就在标签里，可以直接获取，包括下一页，于是开干。  参考教程 【译文】R语言网络爬虫初学者指南（使用rvest包）  整体思路 根据教程，在Chrome安装Selector Gad">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-b2e46eab1522e617f3b92d710c44ee14_b.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-6c8684013bfec0d12f51c32f4f5d71d7_b.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-46-54.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-47-41.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-48-17.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-48-58.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-52-36.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-57-32.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-57-47.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-58-16.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2017-58-41.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2018-01-05.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/12/20//r-crawler-start/_image/2018-01-26%2018-02-02.jpg">
+<meta property="og:updated_time" content="2018-01-26T10:28:48.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="R语言静态网页爬虫（rvest, stringr, DOM)">
+<meta name="twitter:description" content="最近受友之托，帮忙抓取国内铝合金的价格，正好在学习R语言，便答应了来练手。 初始网址是 铝合金ADC12价格行情，集合了每日价格的搜索列表，每页60条，  下一页同样，直到最后一页，大概一整年的数据。查看一下源代码，链接就在标签里，可以直接获取，包括下一页，于是开干。  参考教程 【译文】R语言网络爬虫初学者指南（使用rvest包）  整体思路 根据教程，在Chrome安装Selector Gad">
+<meta name="twitter:image" content="https://pic3.zhimg.com/v2-b2e46eab1522e617f3b92d710c44ee14_b.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/20//r-crawler-start/"/>
+
+
+
+
+
+  <title> R语言静态网页爬虫（rvest, stringr, DOM) | Shawkaine's 小炉 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Shawkaine's 小炉</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description"></h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/20/r-crawler-start/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Shawkaine's 小炉">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Shawkaine's 小炉" src="/images/avatar.jpg">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                R语言静态网页爬虫（rvest, stringr, DOM)
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-20T18:09:00+08:00">
+                2017-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+		  
+		  
+          
+ 
+        
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近受友之托，帮忙抓取国内铝合金的价格，正好在学习R语言，便答应了来练手。</p>
+<p>初始网址是 <a href="http://ometal.com/bin0/new/searchkey.asp?type=%C2%C1%BA%CF%BD%F0ADC12%BC%DB%B8%F1%D0%D0%C7%E9" target="_blank" rel="noopener">铝合金ADC12价格行情</a>，集合了每日价格的搜索列表，每页60条，</p>
+<p><img src="https://pic3.zhimg.com/v2-b2e46eab1522e617f3b92d710c44ee14_b.jpg" alt=""></p>
+<p>下一页同样，直到最后一页，大概一整年的数据。查看一下源代码，链接就在<a>标签里，可以直接获取，包括下一页，于是开干。</a></p>
+<blockquote>
+<p>参考教程 <a href="http://www.ituring.com.cn/article/465317" target="_blank" rel="noopener">【译文】R语言网络爬虫初学者指南（使用rvest包）</a></p>
+</blockquote>
+<h2 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h2><ol>
+<li>根据教程，在Chrome安装Selector Gadget插件，根据CSS选择器、XPath快速定位想要爬取的标签</li>
+<li>如果1不够精确或出现问题，使用正则表达式直接匹配文本</li>
+<li>整理每日价格和日期为data.frame，写入excel<h2 id="预热准备"><a href="#预热准备" class="headerlink" title="预热准备"></a>预热准备</h2></li>
+</ol>
+<ul>
+<li>R语言的安装，基本语法</li>
+<li>所需R包</li>
+<li><p>rvest 处理网页爬虫，<a href="http://blog.csdn.net/sadfasdgaaaasdfa/article/details/45372307" target="_blank" rel="noopener">简介</a></p>
+</li>
+<li><p>stringr 处理字符串：拼接、计算、匹配，<a href="https://www.cnblogs.com/nxld/p/6062950.html" target="_blank" rel="noopener">简介</a></p>
+</li>
+<li>其他要求：web开发的基本知识，基本编程知识</li>
+</ul>
+<h2 id="根据CSS选择器和XPath-定位相应节点"><a href="#根据CSS选择器和XPath-定位相应节点" class="headerlink" title="根据CSS选择器和XPath 定位相应节点"></a>根据CSS选择器和XPath 定位相应节点</h2><p>在Chrome浏览器里打开网页，右键空白处，查看网页源代码，就能看到一连串并列、嵌套的HTML标签（关于CSS，JavaScript部分请<a href="http://www.runoob.com/" target="_blank" rel="noopener">进一步学习前端开发</a>）。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Type"</span> <span class="attr">content</span>=<span class="string">"text/html; charset=gb2312"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>铝合金ADC12价格行情-全球金属网OMETAL.COM<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"/css/news.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">leftmargin</span>=<span class="string">"0"</span> <span class="attr">topmargin</span>=<span class="string">"0"</span> <span class="attr">marginwidth</span>=<span class="string">"0"</span> <span class="attr">marginheight</span>=<span class="string">"0"</span> <span class="attr">class</span>=<span class="string">"colorbar"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>通俗地说，这些标签的关系可以由一个树状结构来表示，而每个标签在树中的位置或者说路径可以由<a href="http://www.w3school.com.cn/cssref/css_selectors.asp" target="_blank" rel="noopener">CSS选择器</a> 或 <a href="http://www.w3school.com.cn/xpath/index.asp" target="_blank" rel="noopener">XPath</a> 来表示，利用<a href="http://selectorgadget.com/" target="_blank" rel="noopener">Selector Gadget</a>插件，我们可以快速定位想要获取的内容。更精准的定义请查看<a href="http://www.runoob.com/htmldom/htmldom-intro.html" target="_blank" rel="noopener">HTML DOM 简介</a></p>
+<p><img src="https://pic3.zhimg.com/v2-6c8684013bfec0d12f51c32f4f5d71d7_b.jpg" alt=""></p>
+<p>插件高亮了所有class=”s105” 的元素，进一步查看源码</p>
+<p><img src="./_image/2018-01-26 17-46-54.jpg" alt=""><br>链接在 td标签的子元素a标签中，根据CSS选择器描述，<code>.s105 a</code> 更为精准</p>
+<p><img src="./_image/2018-01-26 17-47-41.jpg" alt=""><br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">library('rvest')</span><br><span class="line"># 获取每日价格链接</span><br><span class="line">page &lt;- url('http://ometal.com/bin<span class="number">0</span>/new/searchkey.asp?<span class="keyword">type</span>=<span class="symbol">%C2</span><span class="symbol">%C1</span><span class="symbol">%BA</span><span class="symbol">%CF</span><span class="symbol">%BD</span><span class="symbol">%F0ADC12</span><span class="symbol">%BC</span><span class="symbol">%DB</span><span class="symbol">%B8</span><span class="symbol">%F1</span><span class="symbol">%D0</span><span class="symbol">%D0</span><span class="symbol">%C7</span><span class="symbol">%E9</span>','rb')</span><br><span class="line">webpage &lt;- read_html(page)</span><br><span class="line">daily_link &lt;- html_nodes(webpage,'.s<span class="number">105</span> a')</span><br><span class="line">daily_link &lt;- html_attr(daily_link,<span class="string">"href"</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="正则表达式精准提取"><a href="#正则表达式精准提取" class="headerlink" title="正则表达式精准提取"></a>正则表达式精准提取</h2><p>打开某一日价格行情，用同样的办法定位想要的价格</p>
+<p><img src="./_image/2018-01-26 17-48-17.jpg" alt=""><br><figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 生成每日完整链接</span><br><span class="line">link &lt;- paste(<span class="string">"http://ometal.com"</span>,link_data,sep = <span class="string">""</span>)</span><br><span class="line"># 获取每日价格总表</span><br><span class="line">page &lt;- url(link,<span class="string">'rb'</span>)</span><br><span class="line">webpage &lt;- read_html(page)</span><br><span class="line">page_text &lt;- html_nodes(webpage,xpath = <span class="string">'//p/text()'</span>)</span><br></pre></td></tr></table></figure></p>
+<p><img src="./_image/2018-01-26 17-48-58.jpg" alt=""></p>
+<p>这次数据中的杂质更多，用正则表达式来进一步提取<br>观察价格数据的特征，由一系列数字组成，参考价中间由-隔开，涨跌由/隔开，涨跌数字前面有+/-来表示涨跌，所以正则匹配规则为<br><code>raw_text &lt;- str_extract_all(page_text,&quot;.?[0-9]+[-/].?[0-9]+&quot;)</code><br>其中<br><code>.</code>为任意字符<br><code>?</code>为前面字符出现0或1次<br><code>[]</code>内的任意字符将被匹配，<code>[0-9]</code>任意数字<br><code>+</code>前面字符出现1或多次<br>整个表达式可“翻译”为</p>
+<blockquote>
+<p>寻找这样一个字符串：在某个任意字符后面，出现2组数字，2组数字中间间隔1到2个字符，第一个字符为-或/</p>
+</blockquote>
+<p>此时得到的数据如下</p>
+<p><img src="./_image/2018-01-26 17-52-36.jpg" alt=""><br>不相关的文字都变成了<code>character(0)</code>，已经接近我们想要的效果，但还不够。</p>
+<h2 id="利用R强大的索引特性取子集"><a href="#利用R强大的索引特性取子集" class="headerlink" title="利用R强大的索引特性取子集"></a>利用R强大的索引特性取子集</h2><p>关于怎么去掉character(0)，我也是思索了 许久，参考stackoverflow上的几篇回答，终于得出最佳方案<a href="https://stackoverflow.com/questions/44766349/how-to-convert-character0-to-na-in-a-list-with-r-language" target="_blank" rel="noopener">How to convert character(0) to NA in a list with R language?</a> 根据这一篇，可以先将character(0)转换为NA，然后利用 is.na函数取子集但是既然可以用现成的函数取子集，为什么不能利用apply函数自定义直接判断character(0)然后取子集呢？<a href="https://stackoverflow.com/questions/36714218/keep-list-index-number-unchanged-after-removing-null-and-character0-in-r" target="_blank" rel="noopener">Keep list index number unchanged after removing NULL and character[0] in R</a></p>
+<p><img src="./_image/2018-01-26 17-57-32.jpg" alt=""><br>这个答案中的方法给了我启发，也给了我误导，不如自己摸索</p>
+<p><img src="./_image/2018-01-26 17-57-47.jpg" alt=""><br>漂亮！接下来就是循环获取所有价格，以及输出到excel文件了。</p>
+<h2 id="磕碰"><a href="#磕碰" class="headerlink" title="磕碰"></a>磕碰</h2><ul>
+<li>rvest包对部分CSS选择器语法不支持，具体查看<a href="https://cran.r-project.org/web/packages/rvest/rvest.pdf" target="_blank" rel="noopener">官方文档</a></li>
+</ul>
+<p><img src="./_image/2018-01-26 17-58-16.jpg" alt=""><br>竟然是通过selectr包从XPath转译过来的，那还是直接用XPath吧……而且仔细看selectr包的介绍，竟然是从Python包移植过来的（请允悲）</p>
+<p><img src="./_image/2018-01-26 17-58-41.jpg" alt=""></p>
+<ul>
+<li>在抓取下一页的时候，出现了已定位到a的父元素，却无法提取链接的情况，仔细看源码，因为是首页，上一页没有链接，但&lt;&lt;&lt;显然阻断了XPath的解析</li>
+</ul>
+<p><img src="./_image/2018-01-26 18-01-05.jpg" alt=""><br>改变策略，通过读取html文本，进行全文正则匹配，读取原文就一定要注意编码方式，否则正则无法正确匹配。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">totalPage &lt;- readLines(total)</span><br><span class="line">totalPage &lt;- iconv(totalPage,from = <span class="string">"GB2312"</span>,to = <span class="string">"UTF-8"</span>)</span><br><span class="line"><span class="keyword">for</span> (<span class="selector-tag">i</span> <span class="keyword">in</span> length(totalPage):<span class="number">1</span>) &#123;</span><br><span class="line">rule2 &lt;- regexpr(<span class="string">".*next&amp;page.*下一页"</span>,totalPage[i])</span><br><span class="line"><span class="function"><span class="title">if</span><span class="params">(rule2[<span class="number">1</span>]!=-<span class="number">1</span>)</span></span> &#123;</span><br><span class="line">rule3&lt;-regexpr(<span class="string">"/bin0.*next&amp;page=[0-9]+"</span>,totalPage[i])</span><br><span class="line">nextLink&lt;- regmatches(totalPage[i],rule3)</span><br><span class="line"><span class="function"><span class="title">break</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>R的很多报错非常非人类，比如打错变量名会告诉你长度不一致（黑人问号？！）……幸而找到一篇<a href="https://www.r-bloggers.com/translating-weird-r-errors/" target="_blank" rel="noopener">不错的总结文</a></li>
+<li>初期在安装rvest包时，提醒需要rJava包，结果这个安装也是颇为曲折，大约遇到了5,6个问题</li>
+</ul>
+<p><img src="./_image/2018-01-26 18-02-02.jpg" alt=""></p>
+<p>顺便加深了对环境变量的理解…… <a href="http://www.micmiu.com/lang/java/set-javahome-on-mac-os-x/" target="_blank" rel="noopener">$JAVA_HOME环境变量在Mac OS X中设置的问题</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最大的问题还是对R语言的不熟悉，现查现用，以及中文资源较少（其实也不少，但是遇到个例化的问题就很难直接搜到结果，通常只有去外网或Stack Overflow（上面的第二个链接浏览次数才75次……），而且一定要找准关键词。另外一个感受是R并不是一门普适性编程语言，有其牛逼之处（向量运算！），也有很多憋屈的时候，以后再用python做爬虫比较看看（flag……）最后，《R语言实战》真是一本好书！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+  
+        <div class="post-tags">
+          
+            <a href="/tags/R-爬虫-HTML-正则/" rel="tag"># R 爬虫 HTML 正则</a>
+          
+        </div>
+      
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+         
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/29/shell-file-compare/" rel="next" title="Shell 比较并合并两个相似文件">
+                <i class="fa fa-chevron-left"></i> Shell 比较并合并两个相似文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Shawkaine" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/myrt" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-battery-3"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体思路"><span class="nav-number">1.</span> <span class="nav-text">整体思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预热准备"><span class="nav-number">2.</span> <span class="nav-text">预热准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据CSS选择器和XPath-定位相应节点"><span class="nav-number">3.</span> <span class="nav-text">根据CSS选择器和XPath 定位相应节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则表达式精准提取"><span class="nav-number">4.</span> <span class="nav-text">正则表达式精准提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用R强大的索引特性取子集"><span class="nav-number">5.</span> <span class="nav-text">利用R强大的索引特性取子集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磕碰"><span class="nav-number">6.</span> <span class="nav-text">磕碰</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" rel="external nofollow">
+    NexT.Mist
+  </a>| Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a>
+</div>
+
+
+
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
